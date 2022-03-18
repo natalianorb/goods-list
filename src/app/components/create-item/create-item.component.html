@@ -1,1 +1,64 @@
-<p>create-item works!</p>
+<form
+  [formGroup]="createGoodForm"
+  class="container p-4"
+  (ngSubmit)="onSubmit()"
+>
+  <h1 class="mb-4">Создать товар</h1>
+  <div class="form-group mb-4">
+    <div class="mb-3">
+      <label for="title" class="pl-1 mb-1">Название</label>
+      <input
+        formControlName="title"
+        type="text"
+        class="form-control"
+        id="title"
+        placeholder="Например: Кроссовки"
+      />
+      <div *ngIf="title && title.errors && (title.dirty || title.touched)">
+        <small *ngIf="title.errors['required']" class="form-text text-danger"
+          >Пожалуйста, введите наименование товара.</small
+        >
+        <small *ngIf="title.errors['maxlength']" class="form-text text-danger"
+          >Максимальная количество символов: {{ titleMaxLength }}</small
+        >
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="country" class="mb-1" id="countries-input-label">Страна производства</label>
+      <select formControlName="country" class="form-control" id="country">
+        <option selected>Выберите страну</option>
+        <option *ngFor="let country of countries" [value]="country.rusName"> {{ country.rusName }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="prop-title" class="mb-1">Название свойства</label>
+      <input
+        formControlName="propTitle"
+        type="text"
+        class="form-control"
+        id="prop-title"
+        placeholder="Например: Назначение обуви"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="prop-value" class="mb-1">Значение свойства</label>
+      <input
+        formControlName="propValue"
+        type="text"
+        class="form-control"
+        id="prop-value"
+        placeholder="Например: Баскетбол"
+      />
+    </div>
+  </div>
+  <button
+    [disabled]="createGoodForm.invalid"
+    class="btn btn-primary"
+    type="submit"
+  >
+    Создать
+  </button>
+</form>
