@@ -8,16 +8,16 @@ interface CountryNameTranslations {
 }
 
 export interface CountryDTO {
-  id: string;
+  cca3: string;
   name: string;
   translations: CountryNameTranslations;
 }
 
 export class Country {
-  id: string = '';
-  rusName: string;
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.rusName = name;
+  isoCode: string = '';
+  name: string;
+  constructor(isoCode: string, name: string) {
+    this.isoCode = isoCode;
+    this.name = name;
   }
 }

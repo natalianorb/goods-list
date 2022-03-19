@@ -14,22 +14,32 @@
         id="title"
         placeholder="Например: Кроссовки"
       />
-      <div *ngIf="title && title.errors && (title.dirty || title.touched)">
-        <small *ngIf="title.errors['required']" class="form-text text-danger"
+      <div
+        *ngIf="title && title.errors && (title.dirty || title.touched)"
+        [@show]="title.errors"
+        [@disappear]="title && !title.errors"
+      >
+          <small *ngIf="title.errors['required']"  class="form-text text-danger"
           >Пожалуйста, введите наименование товара.</small
-        >
-        <small *ngIf="title.errors['maxlength']" class="form-text text-danger"
+          >
+          <small *ngIf="title.errors['maxlength']" class="form-text text-danger"
           >Максимальная количество символов: {{ titleMaxLength }}</small
-        >
+          >
+
       </div>
     </div>
 
     <div class="mb-3">
-      <label for="country" class="mb-1" id="countries-input-label">Страна производства</label>
-      <select formControlName="country" class="form-control" id="country">
-        <option selected>Выберите страну</option>
-        <option *ngFor="let country of countries" [value]="country.rusName"> {{ country.rusName }}</option>
+      <label   class="mb-1" id="countries-input-label">Страна производства</label>
+      <select formControlName="selectedCountry" class="form-control select-country" id="country" (change)="changeCountry($event)">
+        <option value="" disabled class="text-secondary">Выберите страну</option>
+        <option *ngFor="let country of countries" [ngValue]="country" class="text-dark"> {{ country.name }}</option>
       </select>
+      <div *ngIf="country && country.errors && (country.dirty || country.touched)">
+        <small *ngIf="country.errors['required']" class="form-text text-danger"
+        >Пожалуйста, введите страну производства.</small
+        >
+      </div>
     </div>
 
     <div class="mb-3">
