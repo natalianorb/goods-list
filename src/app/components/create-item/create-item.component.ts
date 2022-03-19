@@ -12,12 +12,12 @@ import { animate, style, transition, trigger } from '@angular/animations';
     trigger('show', [
       transition(':enter', [
         style({ opacity: 0, height: '0px' }),
-        animate('500ms', style({ opacity: 1, height: '20px' })),
+        animate('300ms', style({ opacity: 1, height: '20px' })),
       ]),
     ]),
     trigger('disappear', [
       transition(':leave', [
-        animate('500ms', style({ opacity: 0, height: 0 })),
+        animate('300ms', style({ opacity: 0, height: 0 })),
       ]),
     ]),
   ],
