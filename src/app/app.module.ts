@@ -6,9 +6,10 @@ import { CreateItemComponent } from './components/create-item/create-item.compon
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GoodsTableComponent } from './components/goods-table/goods-table.component';
 
 @NgModule({
-  declarations: [AppComponent, CreateItemComponent],
+  declarations: [AppComponent, CreateItemComponent, GoodsTableComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,

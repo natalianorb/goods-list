@@ -1,5 +1,13 @@
+.create-item {
+  text-align: center;
+
+  .form-group {
+    text-align: left;
+  }
+}
 .form-group {
-  max-width: 1000px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 .custom-file-input {
   position: relative;

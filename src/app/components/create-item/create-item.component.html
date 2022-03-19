@@ -1,10 +1,33 @@
 <form
   [formGroup]="createGoodForm"
-  class="container p-4"
+  class="create-item pb-5"
   (ngSubmit)="onSubmit()"
 >
-  <h1 class="mb-4">Создать товар</h1>
+  <h2 class="create-item__header mb-4">Создание товара</h2>
   <div class="form-group mb-4">
+    <div class="mb-3">
+      <label for="title" class="pl-1 mb-1">Артикул</label>
+      <input
+        formControlName="id"
+        type="text"
+        class="form-control"
+        id="id"
+        placeholder="Уникальный код"
+      />
+      <div
+        *ngIf="id && id.errors && (id.dirty || id.touched)"
+        [@show]="id.errors"
+        [@disappear]="id && !id.errors"
+      >
+        <small *ngIf="id.errors['required']"  class="form-text text-danger">Пожалуйста, введите артикул товара.
+        </small>
+        <small *ngIf="id.errors['maxlength']" class="form-text text-danger">Максимальная количество символов: {{ idMaxLength }}
+        </small>
+        <small *ngIf="id.errors['pattern']"  class="form-text text-danger">Пожалуйста, вводите только цифры.
+        </small>
+      </div>
+    </div>
+
     <div class="mb-3">
       <label for="title" class="pl-1 mb-1">Название</label>
       <input
@@ -19,23 +42,22 @@
         [@show]="title.errors"
         [@disappear]="title && !title.errors"
       >
-          <small *ngIf="title.errors['required']"  class="form-text text-danger"
-          >Пожалуйста, введите наименование товара.</small
-          >
-          <small *ngIf="title.errors['maxlength']" class="form-text text-danger"
-          >Максимальная количество символов: {{ titleMaxLength }}</small
-          >
-
+          <small *ngIf="title.errors['required']"  class="form-text text-danger">
+            Пожалуйста, введите наименование товара.</small>
+          <small *ngIf="title.errors['maxlength']" class="form-text text-danger">
+            Максимальная количество символов: {{ titleMaxLength }}</small>
       </div>
     </div>
 
     <div class="mb-3">
       <label   class="mb-1" id="countries-input-label">Страна производства</label>
-      <select formControlName="selectedCountry" class="form-control select-country" id="country" (change)="changeCountry($event)">
+      <select formControlName="country" class="form-control select-country" id="country">
         <option value="" disabled class="text-secondary">Выберите страну</option>
         <option *ngFor="let country of countries" [ngValue]="country" class="text-dark"> {{ country.name }}</option>
       </select>
-      <div *ngIf="country && country.errors && (country.dirty || country.touched)">
+      <div *ngIf="country && country.errors && (country.dirty || country.touched)"
+           [@show]="country.errors"
+           [@disappear]="country && !country.errors">
         <small *ngIf="country.errors['required']" class="form-text text-danger"
         >Пожалуйста, введите страну производства.</small
         >
@@ -51,6 +73,14 @@
         id="prop-title"
         placeholder="Например: Назначение обуви"
       />
+      <div
+        *ngIf="propTitle && propTitle.errors && (propTitle.dirty || propTitle.touched)"
+        [@show]="propTitle.errors"
+        [@disappear]="propTitle && !propTitle.errors"
+      >
+        <small *ngIf="propTitle.errors['maxlength']" class="form-text text-danger">
+          Максимальная количество символов: {{ textMaxLength }}</small>
+      </div>
     </div>
 
     <div class="mb-3">
@@ -62,6 +92,14 @@
         id="prop-value"
         placeholder="Например: Баскетбол"
       />
+      <div
+        *ngIf="propValue && propValue.errors && (propValue.dirty || propValue.touched)"
+        [@show]="propValue.errors"
+        [@disappear]="propValue && !propValue.errors"
+      >
+        <small *ngIf="propValue.errors['maxlength']" class="form-text text-danger">
+          Максимальная количество символов: {{ textMaxLength }}</small>
+      </div>
     </div>
   </div>
   <button

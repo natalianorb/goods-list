@@ -1,0 +1,19 @@
+<div>
+  <h2 class="mb-4">Таблица товаров</h2>
+  <table class="goods-table">
+    <tr>
+      <th class="goods-table__text-cell">Наименование</th>
+      <th>Страна</th>
+      <th>Название свойства</th>
+      <th>Значение</th>
+      <th>Кол-во</th>
+    </tr>
+    <tr *ngFor="let good of (items$ | async)" class="goods-table__row">
+      <td class="goods-table__text-cell">{{ good.good.title }}</td>
+      <td>{{ good.good.country.name }}</td>
+      <td class="goods-table__text-cell">{{ good.good.propTitle }}</td>
+      <td class="goods-table__text-cell">{{ good.good.propValue }}</td>
+      <td>{{ good.count }}</td>
+    </tr>
+  </table>
+</div>
