@@ -3,27 +3,29 @@
   class="create-item pb-5"
   (ngSubmit)="onSubmit()"
 >
-  <h2 class="create-item__header mb-4">Создание товара</h2>
+  <h2 class="create-item__header mb-4">{{ tableItemsService.isEditMode ? 'Редактирование ' : 'Создание '}} товара</h2>
   <div class="form-group mb-4">
     <div class="mb-3">
       <label for="title" class="pl-1 mb-1">Артикул</label>
       <input
-        formControlName="id"
+        formControlName="vendorCode"
         type="text"
         class="form-control"
         id="id"
         placeholder="Уникальный код"
       />
       <div
-        *ngIf="id && id.errors && (id.dirty || id.touched)"
-        [@show]="id.errors"
-        [@disappear]="id && !id.errors"
+        *ngIf="vendorCode && vendorCode.errors && (vendorCode.dirty || vendorCode.touched)"
+        [@show]="vendorCode.errors"
+        [@disappear]="vendorCode && !vendorCode.errors"
       >
-        <small *ngIf="id.errors['required']"  class="form-text text-danger">Пожалуйста, введите артикул товара.
+        <small *ngIf="vendorCode.errors['required']"  class="form-text text-danger">Пожалуйста, введите артикул товара.
         </small>
-        <small *ngIf="id.errors['maxlength']" class="form-text text-danger">Максимальная количество символов: {{ idMaxLength }}
+        <small *ngIf="vendorCode.errors['maxlength']" class="form-text text-danger">Максимальная количество символов: {{ idMaxLength }}
         </small>
-        <small *ngIf="id.errors['pattern']"  class="form-text text-danger">Пожалуйста, вводите только цифры.
+        <small *ngIf="vendorCode.errors['pattern']"  class="form-text text-danger">Пожалуйста, вводите только цифры.
+        </small>
+        <small *ngIf="vendorCode.errors['sameVendorCode']"  class="form-text text-danger">Пожалуйста, введите уникальный код.
         </small>
       </div>
     </div>
@@ -102,11 +104,23 @@
       </div>
     </div>
   </div>
-  <button
-    [disabled]="createGoodForm.invalid"
-    class="btn btn-primary"
-    type="submit"
-  >
-    Создать
-  </button>
+
+  <div>
+    <button
+      [disabled]="createGoodForm.invalid"
+      class="btn btn-primary"
+      type="submit"
+    >
+      Сохранить
+    </button>
+    <button
+      *ngIf="tableItemsService.isEditMode"
+      (click)="cancelEdit()"
+      type="button"
+      class="btn btn-outline-dark mx-2"
+    >
+      Отмена
+    </button>
+  </div>
 </form>
+

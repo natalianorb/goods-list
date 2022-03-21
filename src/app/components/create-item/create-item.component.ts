@@ -1,9 +1,16 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+  ValidatorFn,
+  ValidationErrors,
+} from '@angular/forms';
 import { CountriesService } from '../../services/countries.service';
 import { Country } from '../../models/Country';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { GoodsListService } from '../../services/goods-list.service';
+import { TableItemsService } from '../../services/goods-list.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -28,11 +35,15 @@ export class CreateItemComponent implements OnDestroy {
   idMaxLength = 20;
   titleMaxLength = 110;
   textMaxLength = 110;
+  countries: Country[] = [];
+  items = this.tableItemsService.lastItems;
+  subscriptions: Subscription[] = [];
   createGoodForm = new FormGroup({
-    id: new FormControl('', [
+    vendorCode: new FormControl('', [
       Validators.required,
       Validators.maxLength(this.idMaxLength),
       Validators.pattern(/^\d+$/),
+      this.createVendorCodeValidator(),
     ]),
     title: new FormControl('', [
       Validators.required,
@@ -42,21 +53,34 @@ export class CreateItemComponent implements OnDestroy {
     propTitle: new FormControl('', Validators.maxLength(this.textMaxLength)),
     propValue: new FormControl('', Validators.maxLength(this.textMaxLength)),
   });
-  countries: Country[] = [];
-  subscriptions: Subscription[] = [];
   constructor(
     private countriesService: CountriesService,
-    private goodsListService: GoodsListService
+    public tableItemsService: TableItemsService
   ) {
     this.subscriptions.push(
       this.countriesService.getAll$().subscribe((countriesList) => {
         this.countries = countriesList;
+      }),
+      this.tableItemsService.editingItem$.subscribe((item) => {
+        if (item) {
+          const { vendorCode, title, country, propTitle, propValue } =
+            item.good;
+          this.createGoodForm.patchValue({
+            vendorCode,
+            title,
+            country,
+            propTitle,
+            propValue,
+          });
+        } else {
+          this.createGoodForm.reset();
+        }
       })
     );
   }
 
-  get id() {
-    return this.createGoodForm.get('id');
+  get vendorCode() {
+    return this.createGoodForm.get('vendorCode');
   }
   get title() {
     return this.createGoodForm.get('title');
@@ -70,10 +94,39 @@ export class CreateItemComponent implements OnDestroy {
   get propValue() {
     return this.createGoodForm.get('propValue');
   }
+  cancelEdit() {
+    this.tableItemsService.cancelEdit();
+  }
   onSubmit() {
-    console.log(this.createGoodForm.value);
-    this.goodsListService.addGood(this.createGoodForm.value);
-    this.createGoodForm.reset();
+    const good = this.createGoodForm.value;
+
+    if (this.tableItemsService.isEditMode) {
+      this.tableItemsService.updateExisting(good);
+      return;
+    }
+
+    if (this.tableItemsService.trySaveNew(good)) {
+      this.createGoodForm.reset();
+    } else {
+      // todo show notification
+    }
+  }
+  createVendorCodeValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      let sameVendorCodeItem = this.items.find(
+        (i) => control.value === i.good.vendorCode
+      );
+
+      if (
+        sameVendorCodeItem &&
+        this.tableItemsService.editingItemId !== sameVendorCodeItem.id
+      ) {
+        return {
+          sameVendorCode: true,
+        };
+      }
+      return null;
+    };
   }
   ngOnDestroy() {
     this.subscriptions.forEach((s) => s.unsubscribe());

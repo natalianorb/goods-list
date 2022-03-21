@@ -8,21 +8,21 @@ import { Country, CountryDTO } from '../models/Country';
   providedIn: 'root',
 })
 export class CountriesService {
-  allCountriesUrl = 'https://restcountries.com/v3.1/all';
+  private allCountriesUrl = 'https://restcountries.com/v3.1/all';
 
   constructor(private http: HttpClient) {}
 
   getAll$(): Observable<Country[]> {
     return this.http.get<CountryDTO[]>(this.allCountriesUrl).pipe(
       map((countriesList: CountryDTO[]) =>
-        countriesList.map(CountriesService.respToModel)
+        countriesList.map(CountriesService.mapResponseToModel)
       ),
       retry(3),
       catchError(this.handleError)
     );
   }
 
-  static respToModel(country: CountryDTO): Country {
+  static mapResponseToModel(country: CountryDTO): Country {
     const rusNames = country.translations && country.translations.rus;
     return new Country(country.cca3, rusNames?.common);
   }
