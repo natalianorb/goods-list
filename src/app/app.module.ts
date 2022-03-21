@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GoodsTableComponent } from './components/goods-table/goods-table.component';
+import { httpInterceptorProviders } from './interceptors';
 
 @NgModule({
   declarations: [AppComponent, CreateItemComponent, GoodsTableComponent],
@@ -17,7 +18,7 @@ import { GoodsTableComponent } from './components/goods-table/goods-table.compon
     NgbModule,
     BrowserAnimationsModule,
   ],
-  providers: [],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

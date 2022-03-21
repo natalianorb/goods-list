@@ -11,7 +11,8 @@ import { CountriesService } from '../../services/countries.service';
 import { Country } from '../../models/Country';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TableItemsService } from '../../services/goods-list.service';
-import { Subscription } from 'rxjs';
+import { Observer, Subscription } from 'rxjs';
+import { TableItem } from '../../models/TableItem';
 
 @Component({
   selector: 'app-create-item',
@@ -61,21 +62,9 @@ export class CreateItemComponent implements OnDestroy {
       this.countriesService.getAll$().subscribe((countriesList) => {
         this.countries = countriesList;
       }),
-      this.tableItemsService.editingItem$.subscribe((item) => {
-        if (item) {
-          const { vendorCode, title, country, propTitle, propValue } =
-            item.good;
-          this.createGoodForm.patchValue({
-            vendorCode,
-            title,
-            country,
-            propTitle,
-            propValue,
-          });
-        } else {
-          this.createGoodForm.reset();
-        }
-      })
+      this.tableItemsService.editingItem$.subscribe(
+        this.createEditingItemObserver()
+      )
     );
   }
 
@@ -126,6 +115,28 @@ export class CreateItemComponent implements OnDestroy {
         };
       }
       return null;
+    };
+  }
+  createEditingItemObserver(): Partial<Observer<TableItem | null>> {
+    return {
+      next: (value: TableItem | null) => {
+        if (value) {
+          let { vendorCode, title, country, propTitle, propValue } = value.good;
+
+          country =
+            this.countries.find((c) => c.isoCode === country.isoCode) ||
+            new Country();
+          this.createGoodForm.patchValue({
+            vendorCode,
+            title,
+            country,
+            propTitle,
+            propValue,
+          });
+        } else {
+          this.createGoodForm.reset();
+        }
+      },
     };
   }
   ngOnDestroy() {
