@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TableItemsService } from '../../services/goods-list.service';
 import { TableItem } from '../../models/TableItem';
+import { EditingItemService } from '../../services/editing-item.service';
 
 @Component({
   selector: 'app-goods-table',
@@ -9,15 +10,25 @@ import { TableItem } from '../../models/TableItem';
 })
 export class GoodsTableComponent {
   items = this.tableItemsService.lastItems;
-  isVisible = !!this.items.length;
-  constructor(private tableItemsService: TableItemsService) {}
-  edit(item: TableItem) {
-    this.tableItemsService.beginEdit(item);
+
+  constructor(
+    private tableItemsService: TableItemsService,
+    private editingItemService: EditingItemService
+  ) {}
+
+  get isVisible() {
+    return !!this.items.length && !this.editingItemService.editingItemId;
   }
+
+  edit(item: TableItem) {
+    this.editingItemService.beginEdit(item);
+  }
+
   delete(item: TableItem) {
     this.tableItemsService.delete(item);
   }
+
   canDelete(item: TableItem) {
-    return item.id !== this.tableItemsService.editingItemId;
+    return item.id !== this.editingItemService.editingItemId;
   }
 }

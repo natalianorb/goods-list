@@ -11,8 +11,12 @@ import { API_SETTINGS } from '../constants/api-settings';
 export class CountriesService {
   constructor(private http: HttpClient) {}
 
+  static mapResponseToModel(country: CountryDTO): Country {
+    const rusNames = country.translations && country.translations.rus;
+    return new Country(country.cca3, rusNames?.common);
+  }
+
   getAll$(): Observable<Country[]> {
-    // todo move mapping to httpInterceptor
     return this.http.get<CountryDTO[]>(API_SETTINGS.allCountriesUrl).pipe(
       map((countriesList: CountryDTO[]) =>
         countriesList.map(CountriesService.mapResponseToModel)
@@ -22,12 +26,7 @@ export class CountriesService {
     );
   }
 
-  static mapResponseToModel(country: CountryDTO): Country {
-    const rusNames = country.translations && country.translations.rus;
-    return new Country(country.cca3, rusNames?.common);
-  }
-
-  // todo move to httpInterceptor
+  // todo make a mixin
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       console.error('An error occurred:', error.error);

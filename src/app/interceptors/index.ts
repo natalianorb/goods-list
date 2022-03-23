@@ -1,6 +1,6 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { GetGoodsInterceptor } from './get-goods-interceptor';
+import { GoodsListInterceptor } from './goods-list-interceptor';
 
 export const httpInterceptorProviders = [
-  { provide: HTTP_INTERCEPTORS, useClass: GetGoodsInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: GoodsListInterceptor, multi: true },
 ];
