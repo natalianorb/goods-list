@@ -37,7 +37,7 @@ export class TableItemsService {
 
     return this.http
       .delete(url)
-      .pipe(catchError(this.handleError))
+      .pipe(retry(3), catchError(this.handleError))
       .subscribe(() => {
         this.lastItems.splice(index, 1);
       });

@@ -18,7 +18,11 @@ export class GoodsListInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (request.method === 'GET' && request.url === API_SETTINGS.getGoodsUrl) {
+    if (
+      (request.method === 'GET' && request.url === API_SETTINGS.getGoodsUrl) ||
+      (request.method === 'DELETE' &&
+        request.url.includes(API_SETTINGS.deleteGoodsUrl))
+    ) {
       return of(new HttpResponse({ status: 200, body: GoodsList }));
     }
     if (

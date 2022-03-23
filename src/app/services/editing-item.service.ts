@@ -10,7 +10,6 @@ export class EditingItemService {
 
   constructor() {
     this.editingItem$.subscribe((item) => {
-      debugger;
       this._editingItemId = item && item.id ? item.id : null;
     });
   }
