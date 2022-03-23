@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Good } from '../models/Good';
-import { Observable, throwError } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { TableItem } from '../models/TableItem';
 import { API_SETTINGS } from '../constants/api-settings';
 import { catchError, retry } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { idGenerator } from '../helpers/id-generator';
 import { EditingItemService } from './editing-item.service';
+import { idGenerator } from '../helpers/id-generator';
 
 @Injectable({
   providedIn: 'root',
@@ -35,21 +35,24 @@ export class TableItemsService {
       return throwError(() => new Error());
     }
 
-    return this.http
-      .delete(url)
-      .pipe(retry(3), catchError(this.handleError))
-      .subscribe(() => {
+    return this.http.delete(url).pipe(
+      retry(3),
+      catchError(this.handleError),
+      tap(() => {
         this.lastItems.splice(index, 1);
-      });
+      })
+    );
   }
 
   public trySaveNew(good: Good) {
-    return this.save(good).subscribe(() => {
-      this.lastItems.push(new TableItem(good, idGenerator()));
-    });
+    return this.save(good).pipe(
+      tap(() => {
+        this.lastItems.push(new TableItem(good, idGenerator()));
+      })
+    );
   }
 
-  public updateExisting(good: Good) {
+  public updateExisting(good: Good): Observable<any> {
     const oldItem = this.lastItems.find(
       (i) => i.id === this.editingItemService.editingItemId
     );
@@ -60,10 +63,11 @@ export class TableItemsService {
       );
     }
 
-    return this.save(good).subscribe(() => {
-      oldItem.good = good;
-      this.editingItemService.setEditingItem(null);
-    });
+    return this.save(good).pipe(
+      tap(() => {
+        oldItem.good = good;
+      })
+    );
   }
 
   private createGoodsObserver() {

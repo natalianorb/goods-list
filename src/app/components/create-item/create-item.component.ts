@@ -1,17 +1,17 @@
 import { Component, OnDestroy } from '@angular/core';
 import {
-  FormGroup,
-  FormControl,
-  Validators,
   AbstractControl,
-  ValidatorFn,
+  FormControl,
+  FormGroup,
   ValidationErrors,
+  ValidatorFn,
+  Validators,
 } from '@angular/forms';
 import { CountriesService } from '../../services/countries.service';
 import { Country } from '../../models/Country';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TableItemsService } from '../../services/goods-list.service';
-import { Observer, Subscription } from 'rxjs';
+import { Observable, Observer, Subscription } from 'rxjs';
 import { TableItem } from '../../models/TableItem';
 import { EditingItemService } from '../../services/editing-item.service';
 
@@ -40,6 +40,7 @@ export class CreateItemComponent implements OnDestroy {
   countries: Country[] = [];
   items = this.tableItemsService.lastItems;
   subscriptions: Subscription[] = [];
+  notificationText: string = '';
   createGoodForm = new FormGroup({
     vendorCode: new FormControl('', [
       Validators.required,
@@ -55,6 +56,7 @@ export class CreateItemComponent implements OnDestroy {
     propTitle: new FormControl('', Validators.maxLength(this.textMaxLength)),
     propValue: new FormControl('', Validators.maxLength(this.textMaxLength)),
   });
+
   constructor(
     private countriesService: CountriesService,
     public tableItemsService: TableItemsService,
@@ -73,35 +75,57 @@ export class CreateItemComponent implements OnDestroy {
   get vendorCode() {
     return this.createGoodForm.get('vendorCode');
   }
+
   get title() {
     return this.createGoodForm.get('title');
   }
+
   get country() {
     return this.createGoodForm.get('country');
   }
+
   get propTitle() {
     return this.createGoodForm.get('propTitle');
   }
+
   get propValue() {
     return this.createGoodForm.get('propValue');
   }
+
   cancelEdit() {
     this.editingItemService.cancelEdit();
   }
+
   onSubmit() {
     const good = this.createGoodForm.value;
+    let observable: Observable<any>;
+    let errorText: string;
 
     if (this.editingItemService.isEditMode) {
-      this.tableItemsService.updateExisting(good);
-      return;
+      observable = this.tableItemsService.updateExisting(good);
+      errorText = 'Ошибка сохранения изменений!';
+    } else {
+      observable = this.tableItemsService.trySaveNew(good);
+      errorText = 'Ошибка сохранения нового товара!';
     }
 
-    if (this.tableItemsService.trySaveNew(good)) {
-      this.createGoodForm.reset();
-    } else {
-      // todo show notification
-    }
+    observable.subscribe({
+      next: () => {
+        this.editingItemService.setEditingItem(null);
+      },
+      error: () => {
+        this.notificationText = errorText;
+        this.setHideTimer();
+      },
+    });
   }
+
+  setHideTimer() {
+    setTimeout(() => {
+      this.notificationText = '';
+    }, 5000);
+  }
+
   createVendorCodeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       let sameVendorCodeItem = this.items.find(
@@ -119,6 +143,7 @@ export class CreateItemComponent implements OnDestroy {
       return null;
     };
   }
+
   createEditingItemObserver(): Partial<Observer<TableItem | null>> {
     return {
       next: (value: TableItem | null) => {
@@ -141,6 +166,7 @@ export class CreateItemComponent implements OnDestroy {
       },
     };
   }
+
   ngOnDestroy() {
     this.subscriptions.forEach((s) => s.unsubscribe());
   }

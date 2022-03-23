@@ -8,9 +8,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GoodsTableComponent } from './components/goods-table/goods-table.component';
 import { httpInterceptorProviders } from './interceptors';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
-  declarations: [AppComponent, CreateItemComponent, GoodsTableComponent],
+  declarations: [
+    AppComponent,
+    CreateItemComponent,
+    GoodsTableComponent,
+    NotificationComponent,
+  ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,

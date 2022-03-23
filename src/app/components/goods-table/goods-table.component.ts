@@ -10,6 +10,7 @@ import { EditingItemService } from '../../services/editing-item.service';
 })
 export class GoodsTableComponent {
   items = this.tableItemsService.lastItems;
+  isAlertVisible: boolean = false;
 
   constructor(
     private tableItemsService: TableItemsService,
@@ -25,7 +26,14 @@ export class GoodsTableComponent {
   }
 
   delete(item: TableItem) {
-    this.tableItemsService.delete(item);
+    this.tableItemsService.delete(item).subscribe({
+      error: () => {
+        this.isAlertVisible = true;
+        setTimeout(() => {
+          this.isAlertVisible = false;
+        }, 5000);
+      },
+    });
   }
 
   canDelete(item: TableItem) {
