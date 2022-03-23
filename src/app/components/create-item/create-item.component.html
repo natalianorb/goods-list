@@ -3,7 +3,7 @@
   class="create-item pb-5"
   (ngSubmit)="onSubmit()"
 >
-  <h2 class="create-item__header mb-4">{{ tableItemsService.isEditMode ? 'Редактирование ' : 'Создание '}} товара</h2>
+  <h2 class="create-item__header mb-4">{{ editingItemService.isEditMode ? 'Редактирование ' : 'Создание '}} товара</h2>
   <div class="form-group mb-4">
     <div class="mb-3">
       <label for="title" class="pl-1 mb-1">Артикул</label>
@@ -114,7 +114,7 @@
       Сохранить
     </button>
     <button
-      *ngIf="tableItemsService.isEditMode"
+      *ngIf="editingItemService.isEditMode"
       (click)="cancelEdit()"
       type="button"
       class="btn btn-outline-dark mx-2"

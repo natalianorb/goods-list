@@ -11,7 +11,9 @@ import { CountriesService } from '../../services/countries.service';
 import { Country } from '../../models/Country';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TableItemsService } from '../../services/goods-list.service';
-import { Subscription } from 'rxjs';
+import { Observer, Subscription } from 'rxjs';
+import { TableItem } from '../../models/TableItem';
+import { EditingItemService } from '../../services/editing-item.service';
 
 @Component({
   selector: 'app-create-item',
@@ -55,27 +57,16 @@ export class CreateItemComponent implements OnDestroy {
   });
   constructor(
     private countriesService: CountriesService,
-    public tableItemsService: TableItemsService
+    public tableItemsService: TableItemsService,
+    public editingItemService: EditingItemService
   ) {
     this.subscriptions.push(
       this.countriesService.getAll$().subscribe((countriesList) => {
         this.countries = countriesList;
       }),
-      this.tableItemsService.editingItem$.subscribe((item) => {
-        if (item) {
-          const { vendorCode, title, country, propTitle, propValue } =
-            item.good;
-          this.createGoodForm.patchValue({
-            vendorCode,
-            title,
-            country,
-            propTitle,
-            propValue,
-          });
-        } else {
-          this.createGoodForm.reset();
-        }
-      })
+      this.editingItemService.editingItem$.subscribe(
+        this.createEditingItemObserver()
+      )
     );
   }
 
@@ -95,12 +86,12 @@ export class CreateItemComponent implements OnDestroy {
     return this.createGoodForm.get('propValue');
   }
   cancelEdit() {
-    this.tableItemsService.cancelEdit();
+    this.editingItemService.cancelEdit();
   }
   onSubmit() {
     const good = this.createGoodForm.value;
 
-    if (this.tableItemsService.isEditMode) {
+    if (this.editingItemService.isEditMode) {
       this.tableItemsService.updateExisting(good);
       return;
     }
@@ -119,13 +110,35 @@ export class CreateItemComponent implements OnDestroy {
 
       if (
         sameVendorCodeItem &&
-        this.tableItemsService.editingItemId !== sameVendorCodeItem.id
+        this.editingItemService.editingItemId !== sameVendorCodeItem.id
       ) {
         return {
           sameVendorCode: true,
         };
       }
       return null;
+    };
+  }
+  createEditingItemObserver(): Partial<Observer<TableItem | null>> {
+    return {
+      next: (value: TableItem | null) => {
+        if (value) {
+          let { vendorCode, title, country, propTitle, propValue } = value.good;
+
+          country =
+            this.countries.find((c) => c.isoCode === country.isoCode) ||
+            new Country();
+          this.createGoodForm.patchValue({
+            vendorCode,
+            title,
+            country,
+            propTitle,
+            propValue,
+          });
+        } else {
+          this.createGoodForm.reset();
+        }
+      },
     };
   }
   ngOnDestroy() {

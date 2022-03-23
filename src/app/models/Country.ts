@@ -14,5 +14,5 @@ export interface CountryDTO {
 }
 
 export class Country {
-  constructor(public isoCode: string = '', public name: string) {}
+  constructor(public isoCode: string = '', public name: string = '') {}
 }
