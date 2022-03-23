@@ -4,13 +4,9 @@
 ngb-alert {
 
   .close {
-    @extend .btn-close;
     position: absolute;
     top: 1rem;
     right: 1rem;
-
-    span {
-      opacity: 0;
-    }
+    
   }
 }
