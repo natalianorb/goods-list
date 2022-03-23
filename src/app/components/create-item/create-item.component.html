@@ -1,1 +1,131 @@
-<p>create-item works!</p>
+<form
+  (ngSubmit)="onSubmit()"
+  [formGroup]="createGoodForm"
+  class="create-item pb-5"
+>
+  <h2 class="create-item__header mb-4">{{ editingItemService.isEditMode ? 'Редактирование ' : 'Создание '}} товара</h2>
+  <div class="form-group mb-4">
+    <div class="mb-3">
+      <label class="pl-1 mb-1" for="title">Артикул</label>
+      <input
+        class="form-control"
+        formControlName="vendorCode"
+        id="id"
+        placeholder="Уникальный код"
+        type="text"
+      />
+      <div
+        *ngIf="vendorCode && vendorCode.errors && (vendorCode.dirty || vendorCode.touched)"
+        [@disappear]="vendorCode && !vendorCode.errors"
+        [@show]="vendorCode.errors"
+      >
+        <small *ngIf="vendorCode.errors['required']" class="form-text text-danger">Пожалуйста, введите артикул товара.
+        </small>
+        <small *ngIf="vendorCode.errors['maxlength']" class="form-text text-danger">Максимальная количество
+          символов: {{ idMaxLength }}
+        </small>
+        <small *ngIf="vendorCode.errors['pattern']" class="form-text text-danger">Пожалуйста, вводите только цифры.
+        </small>
+        <small *ngIf="vendorCode.errors['sameVendorCode']" class="form-text text-danger">Пожалуйста, введите уникальный
+          код.
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="pl-1 mb-1" for="title">Название</label>
+      <input
+        class="form-control"
+        formControlName="title"
+        id="title"
+        placeholder="Например: Кроссовки"
+        type="text"
+      />
+      <div
+        *ngIf="title && title.errors && (title.dirty || title.touched)"
+        [@disappear]="title && !title.errors"
+        [@show]="title.errors"
+      >
+        <small *ngIf="title.errors['required']" class="form-text text-danger">
+          Пожалуйста, введите наименование товара.</small>
+        <small *ngIf="title.errors['maxlength']" class="form-text text-danger">
+          Максимальная количество символов: {{ titleMaxLength }}</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="mb-1" id="countries-input-label">Страна производства</label>
+      <select class="form-control select-country" formControlName="country" id="country">
+        <option class="text-secondary" disabled value="">Выберите страну</option>
+        <option *ngFor="let country of countries" [ngValue]="country" class="text-dark"> {{ country.name }}</option>
+      </select>
+      <div *ngIf="country && country.errors && (country.dirty || country.touched)"
+           [@disappear]="country && !country.errors"
+           [@show]="country.errors">
+        <small *ngIf="country.errors['required']" class="form-text text-danger"
+        >Пожалуйста, введите страну производства.</small
+        >
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="mb-1" for="prop-title">Название свойства</label>
+      <input
+        class="form-control"
+        formControlName="propTitle"
+        id="prop-title"
+        placeholder="Например: Назначение обуви"
+        type="text"
+      />
+      <div
+        *ngIf="propTitle && propTitle.errors && (propTitle.dirty || propTitle.touched)"
+        [@disappear]="propTitle && !propTitle.errors"
+        [@show]="propTitle.errors"
+      >
+        <small *ngIf="propTitle.errors['maxlength']" class="form-text text-danger">
+          Максимальная количество символов: {{ textMaxLength }}</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="mb-1" for="prop-value">Значение свойства</label>
+      <input
+        class="form-control"
+        formControlName="propValue"
+        id="prop-value"
+        placeholder="Например: Баскетбол"
+        type="text"
+      />
+      <div
+        *ngIf="propValue && propValue.errors && (propValue.dirty || propValue.touched)"
+        [@disappear]="propValue && !propValue.errors"
+        [@show]="propValue.errors"
+      >
+        <small *ngIf="propValue.errors['maxlength']" class="form-text text-danger">
+          Максимальная количество символов: {{ textMaxLength }}</small>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <button
+      [disabled]="createGoodForm.invalid"
+      class="btn btn-primary"
+      type="submit"
+    >
+      Сохранить
+    </button>
+    <button
+      (click)="cancelEdit()"
+      *ngIf="editingItemService.isEditMode"
+      class="btn btn-outline-dark mx-2"
+      type="button"
+    >
+      Отмена
+    </button>
+  </div>
+</form>
+<app-notification [show]="!!notificationText">
+  {{ notificationText }}
+</app-notification>
+

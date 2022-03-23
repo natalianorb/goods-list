@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap";
+
+ngb-alert {
+
+  .close {
+    @extend .btn-close;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    span {
+      opacity: 0;
+    }
+  }
+}
