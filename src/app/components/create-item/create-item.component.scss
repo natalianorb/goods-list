@@ -1,3 +1,6 @@
+@use "sass:map";
+@import "bootstrap-utilities";
+
 .create-item {
   text-align: center;
 
@@ -5,16 +8,16 @@
     text-align: left;
   }
 }
+
 .form-group {
-  max-width: 720px;
+  max-width: map.get($container-max-widths, md);
   margin: 0 auto;
 }
-.custom-file-input {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: calc(1.5em + 0.75rem + 2px);
-  margin: 0;
-  overflow: hidden;
-  opacity: 0;
+
+.select-country {
+  color: $secondary;
+
+  &.ng-valid {
+    color: $dark;
+  }
 }

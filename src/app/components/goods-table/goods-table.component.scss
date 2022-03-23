@@ -1,23 +1,31 @@
+@use "sass:map";
 @import "bootstrap-utilities";
+
+$md: map.get($grid-breakpoints, md);
+$xl: map.get($grid-breakpoints, xl);
 .goods-table {
   width: 100%;
+
   &__text-cell {
     max-width: 60px;
     overflow-wrap: break-word;
-    // todo use bootstrap variables
-    @media (min-width: 720px) {
+
+    @media (min-width: $md) {
       max-width: 130px;
     }
-    @media (min-width: 1140px) {
+    @media (min-width: $xl) {
       max-width: 250px;
     }
   }
+
   &__row {
     border-bottom: 1px solid $border-color;
+
     &:last-child {
       border-bottom-color: transparent;
     }
   }
+
   &__buttons-cell {
     text-align: right;
   }
