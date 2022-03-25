@@ -1,5 +1,6 @@
 @use "sass:map";
-@import "bootstrap";
+@import "functions";
+@import "variables";
 
 .create-item {
   text-align: center;

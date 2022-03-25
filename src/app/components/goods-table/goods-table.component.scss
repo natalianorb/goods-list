@@ -1,5 +1,6 @@
 @use "sass:map";
-@import "bootstrap";
+@import "functions";
+@import "variables";
 
 $md: map.get($grid-breakpoints, md);
 $xl: map.get($grid-breakpoints, xl);
