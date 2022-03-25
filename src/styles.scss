@@ -1,5 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
-@import "bootstrap";
+
+@import "functions";
+@import "variables";
+@import "mixins";
+@import "root";
+@import "reboot";
+@import "type";
+@import "images";
+@import "grid";
+@import "forms";
+@import "buttons";
+@import "transitions";
+@import "dropdown";
+@import "alert";
+@import "close";
+@import "utilities";
+@import "print";
 
 ngb-alert {
 
@@ -7,6 +23,5 @@ ngb-alert {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    
   }
 }
